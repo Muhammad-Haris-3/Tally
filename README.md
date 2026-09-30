@@ -21,6 +21,23 @@ The Ministry writes each forecast in the **last days of the month it
 forecasts**, with most of that month's weekly price data already in hand. The
 rule uses none of it.
 
+## Live, from October 2026
+
+Twice a day, a free GitHub Actions job ([`collect.yml`](.github/workflows/collect.yml))
+does four things, and every result is committed, so its time can't be backdated:
+
+- **Weekly prices:** saves each week's PBS SPI workbook ([`data/live/spi_weekly.csv`](data/live/spi_weekly.csv)).
+- **Broker forecasts:** logs every broker-forecast search result the day it appears ([`data/live/brokers/`](data/live/brokers/)).
+  Newspapers have not kept this record, so nobody else has it (FINDINGS F8).
+- **Tally's forecast:** on the last day of each month, issues a forecast from the weekly prices
+  ([`data/live/forecasts.csv`](data/live/forecasts.csv)), under [Amendment 1](PREREGISTRATION.md).
+  In a backtest it beat both the Ministry and the seasonal rule (FINDINGS F9). That backtest is optimistic
+  by construction, and the live record is the real test. September 2026 is a rehearsal and is never scored.
+- **Run log:** records every run, including failures, in [`data/live/runs.jsonl`](data/live/runs.jsonl).
+
+It needs no database and costs nothing: public-repo Actions minutes are free, and the data grows by a few
+MB a year.
+
 ## Why the record can be trusted
 
 | Commit | What was fixed, before what was seen |

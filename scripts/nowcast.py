@@ -18,6 +18,7 @@ from score import dm_hln, f, shift  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 FIRST_TRAIN = "2019-08"
+FIRST_LIVE = "2026-10"
 PKT = timezone(timedelta(hours=5))
 
 
@@ -104,7 +105,9 @@ def live():
         s_t = (np.mean(cur) / np.mean(prv) - 1) * 100
         a, b, _ = fit(cpi, spi, t)
         yhat, _ = forecast(cpi, s_t, a, b, t)
-        row.update(spi_mom=round(s_t, 3), a=round(a, 4), b=round(b, 4), forecast_yoy=round(yhat, 2), status="issued")
+        # Amendment 1 §6: the record starts with October 2026; earlier issues are rehearsals, never scored
+        status = "issued" if t >= FIRST_LIVE else "rehearsal: before first live target"
+        row.update(spi_mom=round(float(s_t), 3), a=round(a, 4), b=round(b, 4), forecast_yoy=round(float(yhat), 2), status=status)
     new = not out.exists()
     out.parent.mkdir(parents=True, exist_ok=True)
     with open(out, "a", newline="", encoding="utf-8") as fh:
