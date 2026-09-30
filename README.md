@@ -35,7 +35,9 @@ silently dropped.
 
 ## Honest limits
 
-- **One forecaster so far.** Brokerage forecasts (§9) are not yet collected.
+- **Brokerages could not be scored.** A fixed search of 74 months found 3 admissible named forecasts;
+  §9 needs 24 per firm. Newspapers only began reporting broker previews regularly in late 2024
+  (FINDINGS F8).
 - **The Ministry often gives no number** when inflation is hardest to call.
   Six directional-only months, five of them in the 2021–22 surge, cannot be
   scored (FINDINGS F3).

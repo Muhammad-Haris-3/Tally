@@ -9,7 +9,75 @@ until it is numbered under §11.
 **F1–F5 were written before any actual CPI figure was joined to the
 register. F6 was written after the actuals were assembled but before any
 error was computed. It is committed separately so the order can be checked.
-F7 is the result.**
+F7 is the result. F8 is the brokerage scorecard, which could not be built.**
+
+---
+
+## F8 — There is no public brokerage track record to score
+
+**30 September 2026 · [`data/brokers/`](data/brokers/) · protocol committed
+`0f4598c` before any search was run**
+
+The idea that started this project was that brokerages publish CPI
+forecasts before every release and that nobody grades them. **The second
+half is true because the first half is not.** In the public, free, dated
+record, brokerage forecasts are rare.
+
+**What the protocol found, run once as committed:**
+
+| Step | Count |
+|---|---|
+| Months searched (Jul 2020 – Aug 2026), 3 fixed queries each | 74 |
+| Items logged | **1,855** |
+| Read: §9 outlet, inflation headline, dated inside the month | **84** articles |
+| … by year | 2020: 1 · 2021: 5 · 2022: 7 · 2023: 10 · 2024: 12 · 2025: 25 · 2026: 24 |
+| Sentences naming a firm (or "brokerage") with a percentage | 40 |
+| **Admitted forecasts naming a firm** | **3** |
+| Admitted but unnamed ("the brokerage house") | 1 |
+
+Most of the 40 sentences are about policy rates, fiscal-year averages, core
+inflation or month-on-month changes, none of which is the target.
+
+**The admitted forecasts, shown individually, never aggregated:**
+
+| Month | Firm | Forecast | First-release actual | Ministry |
+|---|---|---|---|---|
+| Sep 2022 | Arif Habib | 25.3% | *not scoreable: first release not archived (F6)* | excluded (directional) |
+| Jul 2024 | JS Global | 10.5% | 11.09% | excluded (no number) |
+| Mar 2025 | AKD | 0.84% | 0.70% | 1.25% |
+| Sep 2025 | *unnamed* | 6.5–7.0% | 5.60% | 4.0% |
+
+### Numbers refused
+
+- **No brokerage accuracy figure, individual or consensus.** §9 needs 24
+  admitted months per firm to score a firm alone. The pooled consensus has
+  **two scoreable months**. Any average of two errors would be published as a
+  finding and read as one.
+- **No "brokers beat the Ministry" or "the Ministry beats brokers".** The
+  two months above point in opposite directions. Two months settle nothing.
+
+### What a looser rule would add, measured but not applied
+
+The protocol admits a figure only if one sentence names both the firm and the
+figure. Profit and Business Recorder usually put the figure in the
+**headline** ("inflation expected at 5.75–6.25pc in December 2025: report")
+and name the firm elsewhere. Reading headlines would add about **8**
+forecasts, **all between December 2024 and December 2025**.
+
+**Not applied.** The protocol was committed before the search. Loosening it
+after seeing which articles exist is the move §11 exists to prevent. It would
+not change the conclusion either: even with them, no firm comes near 24
+months, and no month before December 2024 gains anything.
+
+### What this means for the project
+
+- **The historical brokerage scorecard is not buildable from free public
+  sources.** Brokerage CPI previews are client research, and newspapers
+  began reporting them regularly only from late 2024.
+- **The honest version is prospective.** From now on, record each
+  brokerage preview the day it is published, before the release. That is a
+  Halflife-style register whose value is that nobody else is keeping it.
+  This is recorded as the next step, not started.
 
 ---
 

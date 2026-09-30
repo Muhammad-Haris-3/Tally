@@ -1,3 +1,5 @@
 data/raw/
 __pycache__/
 data/cpi/_fetch.log
+data/brokers/_decoded.json
+data/brokers/_run.log
