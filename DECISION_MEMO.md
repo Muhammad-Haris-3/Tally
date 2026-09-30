@@ -77,8 +77,8 @@ yet (see below). It is the obvious next thing to test.
 
 **Whether anyone forecasts better.** Brokerages (Topline, AHL, JS Global and
 others) publish their own estimates before each release, but mostly to
-clients. A fixed search of six years of news found only **three** that can
-be checked, far too few to score. Tallying them from now on, as each is
+clients. A fixed search of six years of news found only **three** usable ones
+— far too few to score. Tallying them from now on, as each is
 published, is the way to answer this.
 
 **Months when the Ministry gave no number.** Six times it said only "inflation
