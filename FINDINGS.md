@@ -10,7 +10,41 @@ until it is numbered under §11.
 register. F6 was written after the actuals were assembled but before any
 error was computed. It is committed separately so the order can be checked.
 F7 is the result. F8 is the brokerage scorecard, which could not be built.
-F9 is the backtest of Tally's own nowcast, under Amendment 1.**
+F9 is the backtest of Tally's own nowcast, under Amendment 1. F10 records
+what the free live setup can and cannot reach.**
+
+---
+
+## F10 — Running it for free: what GitHub's runners can reach
+
+**30 September 2026 · measured from GitHub Actions runners, not assumed**
+
+Tally uses **no database**, which avoids both limits hit earlier: GridCast's
+512 MB storage ceiling and the data-transfer allowance that stopped it
+completely. Everything is committed to a public repository, where Actions
+minutes are free. Measured from a runner:
+
+| Source | Direct | Via a Wayback capture |
+|---|---|---|
+| PBS: weekly SPI workbook, monthly CPI review | **200** | — |
+| Business Recorder | **200** | — |
+| The News | **200** | — |
+| Profit | **403** | **readable**: archive.org's crawler is let in |
+| Dawn | **403** | **not readable**: capture returns 204, empty |
+| Google News search and link decoding | works | — |
+
+**Consequence for the live broker register.** Profit articles are captured
+to the Wayback Machine and read from the capture. The capture also gives an
+independent timestamp that nobody on this project can edit. **Dawn items
+are logged, with headline, date and first-seen time, but their text cannot
+be read.** They are recorded as `fetch_failed`. In F8's six-year search
+Dawn supplied one of the three admitted forecasts, so the loss is small, but
+it is not zero. The protocol is unchanged; this is a collection gap,
+published as one.
+
+**Size.** One weekly SPI workbook is about 145 KB, about 7.5 MB a year. Broker
+logs keep candidate sentences only, never article text. GitHub warns at
+1 GB, which is decades away at this rate.
 
 ---
 
