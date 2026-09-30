@@ -1,11 +1,9 @@
-# Tally — pre-registration v0.1 (DRAFT — NOT FROZEN)
+# Tally — pre-registration v1.0 (FROZEN)
 
-> **Draft for review.** Nothing below has been run. No forecast has been
-> extracted from any Finance Ministry document, no baseline has been computed,
-> and no error of any kind has been calculated. The freeze is the commit that
-> removes this banner; every figure Tally publishes cites that commit's hash.
-
-**Drafted 30 September 2026.**
+**Frozen 30 September 2026**, before any forecast was extracted from any
+Finance Ministry document, before any baseline was computed, and before any
+error was calculated. Every figure Tally publishes cites the hash of the commit
+that froze this file.
 
 ---
 
@@ -70,6 +68,11 @@ A forecast row is admitted only if **all** of these hold:
 |---|---|
 | Target month is stated or unambiguous from the text | required |
 | The issue is dated before PBS's release for that month | required |
+
+**Issue date** is the date printed on the document. If only a month is
+printed, it is the first day of that month. If the target month is the same
+month the issue is dated, the forecast is admitted: PBS releases a month's CPI
+at the start of the following month.
 | The forecast is numeric: a range ("8–9%"), a point ("around 7%"), or relative to a stated number ("around July's level") | required |
 
 Every issue produces a row, admitted or not. Excluded rows carry their reason.
@@ -88,6 +91,12 @@ the Ministry look sharper than it is.
   me.
 - Numbers are taken **only** from that quoted sentence.
 - **Point forecast** = midpoint of a range, or the stated point.
+- **Relative forecasts** ("around last month's level") are extracted as a
+  reference to that month. The number is filled in at scoring time from that
+  month's first release — a figure the Ministry already had.
+- **An issue with several numeric CPI statements for the target month:** the
+  one in the outlook section is used. If there is still more than one, the
+  **last** is used. The others are recorded in the row, but not scored.
 - **Range width** is recorded as a range's upper limit minus its lower limit;
   a point forecast has width zero.
 - Extraction is finished for **all** rows, and the register is committed,
@@ -106,8 +115,13 @@ Both use only information public before the Ministry's issue date.
   over the previous 5 years**. Then compute YoY against the index 12 months
   earlier. This captures base effects, which drive most of Pakistan's YoY
   swings.
-  - **Base change:** PBS rebased the index to 2015–16. Month-on-month changes are
-    taken within one base only, and never across the link month.
+  - **Base change:** PBS rebased the index to 2015–16. Each month-on-month
+    change is computed within the base it was published in, so older years use
+    the 2007–08 series' own changes. No change is ever computed across the
+    month where the two series are linked.
+  - Index levels come from PBS's own publications. Where only a later vintage
+    of an old index exists, it is used and the row is flagged. This affects the
+    baseline only, never the target.
 
 B2 is the primary comparison because it is the baseline the Ministry could most
 plausibly be accused of not beating.
