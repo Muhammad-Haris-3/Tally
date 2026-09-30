@@ -159,7 +159,7 @@ def brokers():
             # Dawn and Profit refuse GitHub runners (403, measured 2026-09-30); the Wayback copy
             # was fetched by archive.org's own crawler, so it is read instead.
             try:
-                raw, via = get(re.sub(r"/web/(\d+)/", r"/web/id_/", snapshot, count=1)), "wayback"
+                raw, via = get(re.sub(r"/web/(\d+)/", r"/web/\1id_/", snapshot, count=1)), "wayback"
             except Exception:
                 with open(art_path, "a", encoding="utf-8") as fh:
                     fh.write(json.dumps({"month": key, "url": url, "wayback": snapshot, "status": f"fetch_failed: {e}"}) + "\n")

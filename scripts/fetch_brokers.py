@@ -5,7 +5,7 @@ Steps: fixed Google News RSS queries per month -> every item logged -> items fro
 (gitignored) with its SHA-256 and published timestamp -> sentences naming a brokerage and
 a percentage are written out for hand admission. Nothing here decides what is admitted.
 """
-import calendar, hashlib, html, json, re, sys, time, urllib.parse, urllib.request
+import calendar, gzip, hashlib, html, json, re, sys, time, urllib.parse, urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -28,7 +28,9 @@ def get(url, data=None, headers=None, tries=3):
         try:
             req = urllib.request.Request(url, data=data, headers={**UA, **(headers or {})})
             with urllib.request.urlopen(req, timeout=60) as r:
-                return r.read()
+                data = r.read()
+            # Wayback "id_" copies come back in their stored encoding, often gzip
+            return gzip.decompress(data) if data[:2] == bytes([0x1F, 0x8B]) else data
         except Exception:
             if i == tries - 1:
                 raise
