@@ -1,10 +1,11 @@
 name: collect
 
-# Twice daily (11:17 and 20:17 PKT). Two windows because GitHub's scheduler delays and drops
-# runs; the 20:17 run on the last day of a month still commits before 00:00 PKT.
+# Three times daily (08:17, 11:17, 20:17 PKT). GitHub delays and drops scheduled runs: the first
+# scheduled run (2026-09-30) started 4h46m late, landing after midnight PKT. The early runs
+# leave room for the month-end forecast to commit before 00:00 PKT even with that delay.
 on:
   schedule:
-    - cron: "17 6,15 * * *"
+    - cron: "17 3,6,15 * * *"
   workflow_dispatch:
 
 permissions:
