@@ -219,4 +219,77 @@ side.
 
 ### Change log
 
-*(none)*
+#### Amendment 1 — Tally's own nowcast (§10), and the live broker register (§9)
+
+**Date:** 30 September 2026. **This file before the change:** `f6f631e`.
+
+**1. What changed.** §10 read: *"The SPI-driven nowcast is not specified
+here. Its model, features and backtest window will be fixed in a numbered
+amendment before any SPI file is parsed."* This amendment specifies it and
+adds a prospective broker register. Nothing in §1–9 changes.
+
+**2. Why.** F8 found that the historical broker record cannot be scored.
+F5 found that the Ministry already holds most of the month's weekly prices
+when it forecasts, which makes an SPI nowcast the like-for-like competitor.
+
+**3. What had already been seen.**
+- **The Ministry result (F7):** no better than B2, MAE 1.40 vs 1.32.
+- **Every CPI figure** in `data/cpi/`.
+- **SPI figures seen in passing, not analysed:**
+  - one Dec 2024 SPI annex opened in feasibility (F1);
+  - headline weekly SPI values in news search results (e.g. week to
+    24 Sep 2026: index 369.69, +0.99% WoW, 11.92% YoY);
+  - one CPI review's SPI sentence (July 2020: MoM +2.8%).
+- **No SPI series has been assembled, and nothing has been fitted.**
+
+**4. The model, fixed now.** It is B2 with one input replaced. Where B2 uses
+the five-year mean month-on-month change m̄, Tally uses a nowcast of this
+month's change:
+
+  m̂_t = a_t + b_t · s_t
+  YoŶ_t = (1 + YoY_{t−1}) · (1 + m̂_t) / (1 + MoM_{t−12}) − 1
+
+- **s_t, live:** the SPI month-on-month change. It is the mean of the weekly
+  combined SPI index over weeks *ending* in month t, divided by the same mean
+  for t−1, minus 1. It needs at least two archived weeks in each month;
+  otherwise no forecast is issued, and that month is recorded as missed.
+- **s_t, backtest:** PBS's own monthly SPI month-on-month change, as stated in
+  the CPI Monthly Reviews. This is the only SPI history recoverable at
+  monthly frequency for 2019–26. **It sees every week of the month, which the
+  live forecast may not**, so the backtest is optimistic by construction.
+  It is reported as a backtest, never as a record.
+- **a_t, b_t:** ordinary least squares of the new-base CPI MoM on s, over
+  every month from **August 2019** (the first new-base month) to **t−1**,
+  expanding, refitted every month. No other features, no tuning.
+- **YoY_{t−1} and MoM_{t−12}:** as in B2 (§5).
+
+**5. Backtest.** Targets are the **57 Ministry months** (F7), scored as §6:
+- against **B2**: does SPI add anything?
+- against the **Ministry**, on common months;
+- Diebold–Mariano (HLN), two-sided, α = 0.05; Wilcoxon confirmatory.
+
+Any month whose s_t cannot be found is excluded and listed, never
+interpolated.
+
+**6. Live forecasts.**
+- **Issued** on the last day of each month, from the weeks archived by then.
+- **Valid only if committed to the public repository before 00:00 PKT on
+  the first day of the next month.** The git commit timestamp is the
+  evidence.
+- A late forecast is kept, marked `late`, and never scored.
+- **The first live target is October 2026.**
+- Per §10, **fewer than 36 live months are a track record, not a test.**
+
+**7. Live broker register.** The §9 search queries run **twice daily** for
+the current month. Every item is logged and each qualifying article is saved
+the day it is found; admission follows `data/brokers/PROTOCOL.md` unchanged.
+The same article found later carries no weight. What matters is that the
+repository recorded it before the release.
+
+**8. Outcomes, fixed now.**
+
+| Result | Published as |
+|---|---|
+| Tally significantly beats B2 | "The weekly prices add real information" |
+| No significant difference from B2 | **"The weekly prices add nothing a seasonal rule does not already know"** |
+| Tally significantly worse than B2 | "Tally's SPI model is worse than the seasonal rule" |
