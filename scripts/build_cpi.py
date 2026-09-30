@@ -61,23 +61,28 @@ def bulletin_mom(path):
 
 
 def historical(path):
-    """-> ({month: new-base national index}, {month: old-base index}), one decimal each."""
-    new, old = {}, {}
-    # Pages 1-4 are "Historical Indices"; 5-8 are YoY rates in the same row layout, and
-    # must not be read as levels. Stop at the first page naming the rate table.
+    """-> ({month: new-base national index}, {month: old-base index}, {month: national YoY}).
+
+    Pages 1-4 are "Historical Indices"; pages 5-8 are YoY rates in the same row layout.
+    Each page is read according to its own heading, so rates are never taken as levels.
+    """
+    new, old, yoy = {}, {}, {}
+    rates = False
     for pg in pypdf.PdfReader(path).pages:
         text = pg.extract_text() or ""
-        if "Inflation Rate" in text:
-            break
+        rates = rates or "Inflation Rate" in text  # the untitled continuation pages inherit
         for line in text.splitlines():
             m = re.match(r"(\d{4}) (\d{1,2}) ((?:-?\d+\.\d+ ?){4,6})$", line.strip())
             if m:
                 k = f"{m.group(1)}-{int(m.group(2)):02d}"
                 v = [float(x) for x in m.group(3).split()]
-                new[k] = v[0]
-                if len(v) >= 5:
-                    old[k] = v[4]
-    return new, old
+                if rates:
+                    yoy[k] = v[0]
+                else:
+                    new[k] = v[0]
+                    if len(v) >= 5:
+                        old[k] = v[4]
+    return new, old, yoy
 
 
 def main():
@@ -101,7 +106,7 @@ def main():
     for k in ("bulletins/monthly_bulletin_of_statistics-august2016.pdf", "bulletins/monthly_bulletin_of_statistics_feb2017.pdf", "bulletins/mbs_dec2017.pdf"):
         for m, v in bulletin_mom(paths[k]).items():
             bul.setdefault(m, v)  # earliest bulletin wins: closest to first publication
-    hnew, hold = historical(paths["hist.pdf"])
+    hnew, hold, hyoy = historical(paths["hist.pdf"])
 
     rows = []
     m = "2015-07"
@@ -113,7 +118,8 @@ def main():
             r["yoy_first"], r["yoy_first_src"] = own[(m, "yoy")][0], own[(m, "yoy")][1]
         else:
             r["yoy_first"], r["yoy_first_src"] = "", "not_found"
-        r["yoy_later"] = later.get((m, "yoy", "2015-16"), "")
+        # later vintage, for B1's input only (never the target): a later release, else the table
+        r["yoy_later"] = later.get((m, "yoy", "2015-16"), hyoy.get(m, ""))
         # MoM in the base first published in (for the B2 seasonal mean)
         if (m, "mom") in own:
             r["mom_pub"], r["mom_pub_src"] = own[(m, "mom")][0], own[(m, "mom")][1]

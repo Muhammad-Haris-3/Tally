@@ -8,7 +8,83 @@ until it is numbered under §11.
 
 **F1–F5 were written before any actual CPI figure was joined to the
 register. F6 was written after the actuals were assembled but before any
-error was computed. It is committed separately so the order can be checked.**
+error was computed. It is committed separately so the order can be checked.
+F7 is the result.**
+
+---
+
+## F7 — Primary result: the Ministry is no better than a rule anyone could compute
+
+**30 September 2026 · [`results/primary.json`](results/primary.json) ·
+pre-registration commit `f6f631e`, register `482d247`, actuals `8ce5ed6`**
+
+| 57 scored months, Jul 2020 – Aug 2026 | Mean abs. error (pp) | RMSE | Mean signed error |
+|---|---|---|---|
+| **Finance Ministry** | **1.40** | 1.85 | **−0.47** |
+| B2 — seasonal rule | 1.32 | 1.80 | −0.16 |
+| B1 — no change | 1.80 | — | — |
+
+**Diebold–Mariano (HLN) against B2: 0.67, p = 0.50. Wilcoxon: p = 0.73.**
+Under §6 this is reported as written:
+
+> **The official forecast is no better than a rule anyone could compute.**
+
+It does beat B1 ("same as last month"). That is not the comparison §6 names,
+and it is not promoted to a headline.
+
+### Why this is stronger than it sounds
+
+F5 established that the Ministry writes in the last days of the target
+month, with most of that month's weekly SPI already known. **B2 uses nothing
+from the target month at all**: only last month's CPI and five years of
+seasonal averages. Four weeks of extra information buy no measurable
+accuracy.
+
+### What the Ministry's ranges mean
+
+- **Range hit rate: 32.7%.** A typical Ministry range is one point wide. The
+  actual lands inside it about one month in three. No confidence level is
+  claimed, so this is a description, not a failed test (§6).
+- **The Ministry under-forecasts** (mean error −0.47 pp).
+- **The miss is lopsided.** In the 28 months when inflation rose, the mean
+  error is **−1.68 pp**; in the 28 months when it fell, **+0.72**. The
+  Ministry is slow in both directions and slower on the way up (§7 split,
+  descriptive).
+
+### Regimes (§7, descriptive only)
+
+| | n | Ministry MAE | B2 MAE | Range hit rate |
+|---|---|---|---|---|
+| Actual ≥ 15% | 19 | 2.39 | 2.00 | **11.8%** |
+| Actual < 15% | 38 | 0.90 | 0.98 | 42.1% |
+
+The Ministry does slightly better than the rule in calm months and worse in
+high-inflation months, which is when a forecast matters most. The primary
+test is not re-run within these groups.
+
+### Robustness committed in advance
+
+- **Without the two F4 rows** (PDFs created after month end): n = 55,
+  Ministry 1.37 vs B2 1.33, DM p = 0.72. Same verdict.
+- **The directional exclusions (F3)** remain unscored. Five of six fall in
+  the 2021–22 surge, where the Ministry's scored months are already its
+  worst.
+
+### A defect found in the first run, recorded rather than hidden
+
+The first scoring run scored **56** rows, not 57. October 2022 was dropped as
+"baseline input missing", because September 2022's YoY was not parsed from
+any release (F6). F6, committed before scoring, already said that input would
+come from a later statement. The PBS *Historical* table supplied it (23.2%),
+and the second run scored all 57.
+
+| Run | n | DM (HLN) | p | Verdict |
+|---|---|---|---|---|
+| First (row silently dropped) | 56 | 0.49 | 0.62 | no significant difference |
+| **Second (reported)** | **57** | **0.67** | **0.50** | **no significant difference** |
+
+Both are shown because the dropped row was discovered only after the first
+result was seen.
 
 ---
 

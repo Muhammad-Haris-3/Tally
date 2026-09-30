@@ -1,0 +1,183 @@
+{
+  "admitted_in_register": 57,
+  "scored": 57,
+  "dropped": [],
+  "primary": {
+    "dm_hln": 0.674,
+    "p": 0.503,
+    "mean_abs_err_diff_ministry_minus_b2": 0.077,
+    "wilcoxon_stat": 783.0,
+    "wilcoxon_p": 0.7296,
+    "verdict": "NO SIGNIFICANT DIFFERENCE"
+  },
+  "all": {
+    "label": "all admitted",
+    "n": 57,
+    "ministry": {
+      "mae": 1.4,
+      "rmse": 1.851,
+      "bias": -0.471
+    },
+    "b1": {
+      "mae": 1.804,
+      "rmse": 2.547,
+      "bias": 0.036
+    },
+    "b2": {
+      "mae": 1.323,
+      "rmse": 1.795,
+      "bias": -0.158
+    },
+    "range_hit_rate": 0.327,
+    "range_n": 55
+  },
+  "without_F4_rows": {
+    "label": "excluding pdf_created_after_month_end",
+    "n": 55,
+    "ministry": {
+      "mae": 1.368,
+      "rmse": 1.832,
+      "bias": -0.571
+    },
+    "b1": {
+      "mae": 1.756,
+      "rmse": 2.49,
+      "bias": -0.076
+    },
+    "b2": {
+      "mae": 1.327,
+      "rmse": 1.811,
+      "bias": -0.18
+    },
+    "range_hit_rate": 0.34,
+    "range_n": 53,
+    "dm_hln": 0.356,
+    "p": 0.723
+  },
+  "regime_high": {
+    "label": "actual >= 15.0",
+    "n": 19,
+    "ministry": {
+      "mae": 2.394,
+      "rmse": 2.764,
+      "bias": -1.087
+    },
+    "b1": {
+      "mae": 3.112,
+      "rmse": 3.778,
+      "bias": 0.065
+    },
+    "b2": {
+      "mae": 2.0,
+      "rmse": 2.478,
+      "bias": -1.156
+    },
+    "range_hit_rate": 0.118,
+    "range_n": 17
+  },
+  "regime_low": {
+    "label": "actual < 15.0",
+    "n": 38,
+    "ministry": {
+      "mae": 0.903,
+      "rmse": 1.148,
+      "bias": -0.163
+    },
+    "b1": {
+      "mae": 1.149,
+      "rmse": 1.609,
+      "bias": 0.021
+    },
+    "b2": {
+      "mae": 0.984,
+      "rmse": 1.328,
+      "bias": 0.341
+    },
+    "range_hit_rate": 0.421,
+    "range_n": 38
+  },
+  "inflation_rose": {
+    "label": "actual above last month",
+    "n": 28,
+    "ministry": {
+      "mae": 1.764,
+      "rmse": 2.254,
+      "bias": -1.683
+    },
+    "b1": {
+      "mae": 1.8,
+      "rmse": 2.433,
+      "bias": -1.8
+    },
+    "b2": {
+      "mae": 1.519,
+      "rmse": 2.08,
+      "bias": -1.201
+    },
+    "range_hit_rate": 0.231,
+    "range_n": 26
+  },
+  "inflation_fell": {
+    "label": "actual below last month",
+    "n": 28,
+    "ministry": {
+      "mae": 1.086,
+      "rmse": 1.376,
+      "bias": 0.724
+    },
+    "b1": {
+      "mae": 1.872,
+      "rmse": 2.699,
+      "bias": 1.872
+    },
+    "b2": {
+      "mae": 1.168,
+      "rmse": 1.495,
+      "bias": 0.885
+    },
+    "range_hit_rate": 0.393,
+    "range_n": 28
+  },
+  "form_range": {
+    "label": "range",
+    "n": 55,
+    "ministry": {
+      "mae": 1.343,
+      "rmse": 1.793,
+      "bias": -0.38
+    },
+    "b1": {
+      "mae": 1.761,
+      "rmse": 2.527,
+      "bias": 0.145
+    },
+    "b2": {
+      "mae": 1.268,
+      "rmse": 1.742,
+      "bias": -0.06
+    },
+    "range_hit_rate": 0.327,
+    "range_n": 55
+  },
+  "form_relative": {
+    "label": "relative",
+    "n": 2,
+    "ministry": {
+      "mae": 2.97,
+      "rmse": 3.038,
+      "bias": -2.97
+    },
+    "b1": {
+      "mae": 2.97,
+      "rmse": 3.038,
+      "bias": -2.97
+    },
+    "b2": {
+      "mae": 2.849,
+      "rmse": 2.909,
+      "bias": -2.849
+    },
+    "range_hit_rate": null,
+    "range_n": 0
+  }
+}
