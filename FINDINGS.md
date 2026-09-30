@@ -6,8 +6,66 @@ assumed. Newest first. Nothing here overrides
 should change, it is recorded as a **proposed amendment** and stays proposed
 until it is numbered under §11.
 
-**As of every entry below, no actual CPI figure has been joined to the
-register and no error has been computed.**
+**F1–F5 were written before any actual CPI figure was joined to the
+register. F6 was written after the actuals were assembled but before any
+error was computed. It is committed separately so the order can be checked.**
+
+---
+
+## F6 — How the actuals and baseline inputs were sourced
+
+**30 September 2026 · `data/cpi/` · decisions made before scoring**
+
+**The target (§2).** Each of the 57 targets comes from that month's own PBS
+release; none is filled from a later one.
+
+- **36** come from the press release, to two decimals.
+- **21** come from the same month's *Monthly Review on Price Indices*,
+  because the press release is not archived. The Review is issued alongside
+  the release and states the same headline, to one decimal. Most of these 21
+  are 2025–26, when the new PBS site stopped posting separate press releases.
+
+§2 names "the monthly PBS press release". Reading the same-month Review as
+that release is a judgement, recorded here before any error was computed.
+The two sources agree wherever both survive (below).
+
+**Cross-check.** 156 figures are stated in more than one release. **152 agree
+to within 0.05.** The four that do not are small later revisions, for example
+October 2023 YoY, first 26.89, restated as 26.8. First publication is used
+throughout.
+
+**Filenames lie.** PBS's file named "September 2022" is August's release, in
+every Wayback capture from November 2022 to June 2026. The month of every
+release is read from its text, never its filename. September 2022's own
+release is not archived. It is not a target (it is excluded, directional),
+but it is B1's input for October 2022. That one input uses the later
+statement and is flagged.
+
+**The switch of base.** PBS headlined the 2007-08 base up to July 2019. The
+August 2019 release prints both bases and declares 2015-16, so August 2019 is
+the first new-base month. The column order in the transition releases
+changes (old first in August and September, new first in October); the
+parser reads the column by its header.
+
+**B2's seasonal mean (§5)** draws 285 monthly changes:
+
+| Source | Count |
+|---|---|
+| press release | 155 |
+| same-month Review | 55 |
+| *Monthly Bulletin of Statistics* table 7.1 (old base, 2015–17) | 35 |
+| PBS *Historical Indices* table, computed from one-decimal index levels | 40 |
+
+The last source is a later vintage. §5 allows it, flagged.
+
+**B2's formula.** §5 defines B2 on index levels. It is computed from
+published rates with the identity
+
+  YoY_t = (1 + YoY_{t−1}) × (1 + m̄) / (1 + MoM_{t−12}) − 1,
+
+which is algebraically the same forecast. It avoids re-deriving an index
+level across the base change. MoM_{t−12} is taken on the new base, since the
+YoY it combines with is.
 
 ---
 
