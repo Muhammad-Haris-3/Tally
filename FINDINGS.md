@@ -9,7 +9,51 @@ until it is numbered under §11.
 **F1–F5 were written before any actual CPI figure was joined to the
 register. F6 was written after the actuals were assembled but before any
 error was computed. It is committed separately so the order can be checked.
-F7 is the result. F8 is the brokerage scorecard, which could not be built.**
+F7 is the result. F8 is the brokerage scorecard, which could not be built.
+F9 is the backtest of Tally's own nowcast, under Amendment 1.**
+
+---
+
+## F9 — Backtest: the weekly prices beat both the rule and the Ministry, with a caveat that matters
+
+**30 September 2026 · [`results/nowcast_backtest.json`](results/nowcast_backtest.json)
+· model fixed in Amendment 1 (`e477ec8`), inputs committed `8b1a8ef` before
+the run**
+
+| 56 months (Aug 2020 excluded: no SPI figure) | Mean abs. error | RMSE | Bias |
+|---|---|---|---|
+| **Tally (SPI nowcast)** | **0.93** | 1.42 | −0.12 |
+| B2 — seasonal rule | 1.34 | 1.81 | −0.16 |
+| Finance Ministry | 1.41 | 1.86 | −0.50 |
+
+| Tally against | DM (HLN) | p | Wilcoxon p |
+|---|---|---|---|
+| B2 | −3.10 | **0.003** | 0.0005 |
+| Ministry | −3.34 | **0.002** | 0.001 |
+
+Under Amendment 1 §8 this reads: **"The weekly prices add real
+information."** The backtest is not the claim. Three reasons:
+
+1. **It is optimistic by construction.** s_t is PBS's monthly SPI change,
+   which uses every week of the month. A live forecast issued on the last day
+   may be missing the final week. Amendment 1 said so before the run, and it
+   is why this is labelled a backtest.
+2. **It is not a record.** Every input existed before the model did. What
+   makes the Ministry's numbers evidence is that they were published before
+   the outcome; Tally's are not yet.
+3. **The comparison flatters Tally slightly.** Both use the same last-month
+   CPI and last-year MoM, so Tally's edge is entirely the SPI term. That is the
+   question being asked, but a live SPI is noisier than PBS's monthly figure.
+
+**What it licenses:** running the live forecast, which is the actual test.
+**What it does not:** any statement that Tally forecasts inflation better
+than the Ministry. That claim waits for the live record, and per §10 for 36
+months before it is called a test.
+
+**One data choice made before the run:** for s_t, the month's own review is
+used when its figure is clearly signed (72 months). Otherwise, later reviews
+are used where they agree to within 0.15 (22 months). Three months were
+revised by PBS by 0.2–0.4 points; the first print is used.
 
 ---
 

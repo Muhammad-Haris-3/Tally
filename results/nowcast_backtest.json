@@ -1,0 +1,38 @@
+{
+  "n": 56,
+  "excluded": [
+    [
+      "2020-08",
+      "spi_not_found"
+    ]
+  ],
+  "mae": {
+    "tally": 0.925,
+    "b2": 1.344,
+    "ministry": 1.41
+  },
+  "rmse": {
+    "tally": 1.418,
+    "b2": 1.811,
+    "ministry": 1.864
+  },
+  "bias": {
+    "tally": -0.12,
+    "b2": -0.158,
+    "ministry": -0.495
+  },
+  "vs_b2": {
+    "dm_hln": -3.104,
+    "p": 0.003,
+    "mean_abs_diff_tally_minus": -0.419,
+    "wilcoxon_p": 0.0005
+  },
+  "vs_ministry": {
+    "dm_hln": -3.339,
+    "p": 0.0015,
+    "mean_abs_diff_tally_minus": -0.485,
+    "wilcoxon_p": 0.0012
+  },
+  "verdict_vs_b2": "TALLY BEATS B2",
+  "note": "Backtest: s_t sees every week of the month (Amendment 1 \u00a74). Optimistic by construction; not a record."
+}
