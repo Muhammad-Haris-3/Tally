@@ -152,12 +152,18 @@ def brokers():
         host = urllib.parse.urlparse(url).netloc.removeprefix("www.")
         if host not in fb.OUTLETS:
             continue
+        snapshot = wayback_save(url)
         try:
-            raw = get(url)
+            raw, via = get(url), "direct"
         except Exception as e:
-            with open(art_path, "a", encoding="utf-8") as fh:
-                fh.write(json.dumps({"month": key, "url": url, "status": f"fetch_failed: {e}"}) + "\n")
-            continue
+            # Dawn and Profit refuse GitHub runners (403, measured 2026-09-30); the Wayback copy
+            # was fetched by archive.org's own crawler, so it is read instead.
+            try:
+                raw, via = get(re.sub(r"/web/(\d+)/", r"/web/id_/", snapshot, count=1)), "wayback"
+            except Exception:
+                with open(art_path, "a", encoding="utf-8") as fh:
+                    fh.write(json.dumps({"month": key, "url": url, "wayback": snapshot, "status": f"fetch_failed: {e}"}) + "\n")
+                continue
         pub, body = fb.article(raw)
         cands = [s.strip() for s in re.split(r"(?<=[.!?])\s+(?=[A-Z\"'])", body)
                  if re.search(fb.FIRMS, s, re.I) and re.search(r"\d(?:\.\d+)?\s?(?:%|percent|pc)", s)]
@@ -166,10 +172,24 @@ def brokers():
             # hash proves which page was read; the URL lets anyone reread it.
             fh.write(json.dumps({"month": key, "url": url, "outlet": fb.OUTLETS[host], "title": rec["title"],
                                  "published": pub, "saved_utc": NOW.isoformat(timespec="seconds"),
+                                 "read_via": via, "wayback": snapshot,
                                  "sha256_html": hashlib.sha256(raw).hexdigest(), "candidates": cands,
                                  "status": "saved"}, ensure_ascii=False) + "\n")
         saved += 1
     return f"{len(new_items)} new item(s), {saved} article(s) saved"
+
+
+def wayback_save(url):
+    """Ask the Wayback Machine to capture the page now. Free, keyless, and an independent
+    timestamp: evidence the article existed before the release that nobody here can edit."""
+    try:
+        req = fb.urllib.request.Request("https://web.archive.org/save/" + url,
+                                        headers={"User-Agent": "Tally/1.0 (github.com/Muhammad-Haris-3/Tally)"})
+        with fb.urllib.request.urlopen(req, timeout=120) as r:
+            time.sleep(5)  # anonymous captures are rate-limited; articles arrive a few a day
+            return r.geturl() if "/web/" in r.geturl() else ""
+    except Exception:
+        return ""
 
 
 def nowcast():

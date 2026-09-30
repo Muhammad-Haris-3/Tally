@@ -4,14 +4,20 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - run: pip install -r requirements.txt
       - run: |
-          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0 Safari/537.36"
-          for u in \
-            https://www.pbs.gov.pk/wp-content/uploads/2020/07/3.-SPI-Report-24.09.2026.xlsx \
-            https://www.pbs.gov.pk/wp-content/uploads/2020/07/Monthly-Review-August-2026-1.pdf \
-            https://www.brecorder.com/news/40441339/pakistan-september-inflation-seen-easing-but-energy-pressures-persist \
-            https://www.dawn.com/news/1946000 \
-            https://profit.pakistantoday.com.pk/2026/08/01/short-term-inflation-eases-091percent-wow-remains-up-905percent-yoy \
-            https://www.thenews.com.pk/latest/1076046-pakistans-cpi-inflation-spikes-to-record-high-on-runaway-food-prices ; do
-            echo "$(curl -s -o /dev/null -w '%{http_code} %{size_download}' -A "$UA" -H 'Accept: text/html,application/xhtml+xml' -H 'Accept-Language: en-US,en;q=0.9' --max-time 60 "$u") $u"
-          done
+          python - <<'PY'
+          import re, sys
+          sys.path.insert(0, "scripts")
+          import collect, fetch_brokers as fb
+          for url in ["https://profit.pakistantoday.com.pk/2026/08/01/short-term-inflation-eases-091percent-wow-remains-up-905percent-yoy",
+                      "https://www.dawn.com/news/1946000"]:
+              snap = collect.wayback_save(url)
+              raw = collect.get(re.sub(r"/web/(\d+)/", r"/web/\1id_/", snap, count=1)) if snap else b""
+              pub, body = fb.article(raw) if raw else ("", "")
+              print("SNAP", snap, "| bytes", len(raw), "| published", pub, "| body chars", len(body))
+          PY
