@@ -72,42 +72,70 @@ def ten_weeks(data):
     return out
 
 
-def cpi():
-    """Append the newest month once its Monthly Review appears. Names vary, so try the known shapes."""
-    monthly = list(csv.DictReader(open(ROOT / "data/cpi/monthly.csv", encoding="utf-8")))
-    last = monthly[-1]["month"]
-    t = fc_shift(last, 1)
-    y, m = map(int, t.split("-"))
-    mon = date(y, m, 1).strftime("%B")
-    for name in (f"Monthly-Review-{mon}-{y}.pdf", f"Monthly-Review-{mon}-{y}-1.pdf",
-                 f"Monthly-Review-{mon}-{y}.docx", f"Monthly-Review-{mon}-{y}-1.docx"):
+def pbs_file(names):
+    """First of `names` that PBS serves as a real PDF/DOCX, saved to data/live/cpi_files. -> (name, bytes)."""
+    for name in names:
         try:
             data = get(PBS + name)
         except Exception:
             continue
-        if data[:4] not in (b"%PDF", b"PK\x03\x04"):
-            continue
-        text = fc.text_of(data)
-        st = {(mo, r): v for mo, r, v in fc.parse_new(text)}
-        if (t, "yoy") not in st:
-            return f"{name} found but its headline did not parse; nothing appended"
-        dest = LIVE / "cpi_files" / name
-        dest.parent.mkdir(parents=True, exist_ok=True)
-        dest.write_bytes(data)
+        if data[:4] in (b"%PDF", b"PK\x03\x04"):
+            dest = LIVE / "cpi_files" / name
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_bytes(data)
+            return name, data
+    return None, None
+
+
+def review_names(mon, y):
+    return [f"Monthly-Review-{mon}-{y}{s}{e}" for e in (".pdf", ".docx") for s in ("", "-1")]
+
+
+def cpi():
+    """Append the newest month's CPI from its press release (§2's source; PBS posts it on release
+    day, the Review days later), else from the Review. Separately, take each month's SPI change
+    from its Review once that appears. File names vary, so the known shapes are tried in turn."""
+    msgs = []
+    monthly = list(csv.DictReader(open(ROOT / "data/cpi/monthly.csv", encoding="utf-8")))
+    t = fc_shift(monthly[-1]["month"], 1)
+    y, m = map(int, t.split("-"))
+    mon = date(y, m, 1).strftime("%B")
+    name, data = pbs_file([f"Press-Release-{mon}-{y}{s}.pdf" for s in ("", "-1")] +
+                          [f"CPI-Press-Release-{mon}-{y}{s}.pdf" for s in ("", "-1")])
+    kind, st = "press_release", {}
+    if data:
+        st = {(mo, r): v for mo, r, v in fc.parse_press(fc.text_of(data))[0]}
+    if (t, "yoy") not in st:
+        name, data = pbs_file(review_names(mon, y))
+        kind = "review"
+        st = {(mo, r): v for mo, r, v in fc.parse_new(fc.text_of(data))} if data else {}
+    if (t, "yoy") in st:
         mom = st.get((t, "mom"), "")
         row = {k: "" for k in monthly[0]}
-        row.update(month=t, headline_base="2015-16", yoy_first=st[(t, "yoy")], yoy_first_src="review",
-                   yoy_later=st[(t, "yoy")], mom_pub=mom, mom_pub_src="review" if mom != "" else "not_found",
+        row.update(month=t, headline_base="2015-16", yoy_first=st[(t, "yoy")], yoy_first_src=kind,
+                   yoy_later=st[(t, "yoy")], mom_pub=mom, mom_pub_src=kind if mom != "" else "not_found",
                    mom_new=mom, mom_new_src="release" if mom != "" else "not_found")
         with open(ROOT / "data/cpi/monthly.csv", "a", newline="", encoding="utf-8") as fh:
             csv.DictWriter(fh, fieldnames=monthly[0].keys()).writerow(row)
-        spi_rows = {r["month"] for r in csv.DictReader(open(ROOT / "data/cpi/spi_monthly.csv", encoding="utf-8"))}
-        own = [(mo, v) for mo, v, ok in bsm.parse(text, t) if mo == t and ok]
-        if own and t not in spi_rows:
+        msgs.append(f"CPI {t} appended from {name} (sha256 {hashlib.sha256(data).hexdigest()[:12]})")
+    else:
+        msgs.append(f"no CPI release yet for {t}" + (f" ({name} found but did not parse)" if name else ""))
+
+    # SPI change: the nowcast is fitted on every month up to t-1, so take any recent month still missing
+    have = {r["month"] for r in csv.DictReader(open(ROOT / "data/cpi/spi_monthly.csv", encoding="utf-8"))}
+    latest = list(csv.DictReader(open(ROOT / "data/cpi/monthly.csv", encoding="utf-8")))[-1]["month"]
+    for k in range(3):
+        s = fc_shift(latest, -k)
+        if s in have:
+            continue
+        sy, sm = map(int, s.split("-"))
+        rname, rdata = pbs_file(review_names(date(sy, sm, 1).strftime("%B"), sy))
+        own = [v for mo, v, ok in bsm.parse(fc.text_of(rdata), s) if mo == s and ok] if rdata else []
+        if own:
             with open(ROOT / "data/cpi/spi_monthly.csv", "a", newline="", encoding="utf-8") as fh:
-                csv.writer(fh).writerow([t, own[0][1], 1, 0, "own_review", 0.0])
-        return f"appended {t} from {name} (sha256 {hashlib.sha256(data).hexdigest()[:12]})"
-    return f"no review yet for {t}"
+                csv.writer(fh).writerow([s, own[0], 1, 0, "own_review", 0.0])
+            msgs.append(f"SPI {s} appended from {rname}")
+    return "; ".join(msgs)
 
 
 def fc_shift(m, k):
